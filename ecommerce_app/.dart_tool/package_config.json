@@ -123,7 +123,7 @@
     },
     {
       "name": "firebase_core",
-      "rootUri": "file:///C:/Users/Daniel%20Cadelina/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-4.2.1",
+      "rootUri": "file:///C:/Users/Daniel%20Cadelina/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-4.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -135,7 +135,7 @@
     },
     {
       "name": "firebase_core_web",
-      "rootUri": "file:///C:/Users/Daniel%20Cadelina/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-3.3.0",
+      "rootUri": "file:///C:/Users/Daniel%20Cadelina/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-3.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },

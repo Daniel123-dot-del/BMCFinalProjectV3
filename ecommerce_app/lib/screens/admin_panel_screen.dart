@@ -89,102 +89,113 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // 1. Let's change the title to be more general
-        title: const Text('Admin Panel'),
-      ),
+      appBar: AppBar(title: const Text('Admin - Add Product')),
+      // 1. Lets the user scroll if the keyboard covers the fields
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            // 2. Find this Column
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 3. --- ADD THIS NEW BUTTON ---
-              ElevatedButton.icon(
-                icon: const Icon(Icons.list_alt),
-                label: const Text('Manage All Orders'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo, // A different color
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                onPressed: () {
-                  // 4. Navigate to our new screen
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const AdminOrderScreen(),
-                    ),
-                  );
-                },
-              ),
-
-              // 5. A divider to separate it
-              const Divider(height: 30, thickness: 1),
-
-              const Text(
-                'Add New Product',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-
-              // 6. The rest of your form (wrapped in its own Form widget)
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Product Name',
+          // 2. The Form widget that holds our fields
+          child: Form(
+            key: _formKey, // 3. Link the form to our key
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 3. --- ADD THIS NEW BUTTON ---
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.list_alt),
+                  label: const Text('Manage All Orders'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo, // A different color
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () {
+                    // 4. Navigate to our new screen
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AdminOrderScreen(),
                       ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Please enter a name'
-                          : null,
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Description',
-                      ),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Please enter a description'
-                          : null,
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: _priceController,
-                      decoration: const InputDecoration(labelText: 'Price'),
-                      keyboardType: TextInputType.number,
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Please enter a price'
-                          : null,
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: _imageUrlController,
-                      decoration: const InputDecoration(labelText: 'Image URL'),
-                      validator: (value) => value == null || value.isEmpty
-                          ? 'Please enter an image URL'
-                          : null,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : _uploadProduct,
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            )
-                          : const Text('Upload Product'),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              ),
-            ],
+
+                // 5. A divider to separate it
+                const Divider(height: 30, thickness: 1),
+
+                const Text(
+                  'Add New Product',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+
+                // 4. The "Image URL" text field
+                TextFormField(
+                  controller: _imageUrlController,
+                  decoration: const InputDecoration(labelText: 'Image URL'),
+                  keyboardType: TextInputType.url,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an image URL';
+                    }
+                    if (!value.startsWith('http')) {
+                      return 'Please enter a valid URL (e.g., http://...)';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // 5. The "Product Name" text field
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Product Name'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a name' : null,
+                ),
+                const SizedBox(height: 16),
+
+                // 6. The "Description" text field
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                  maxLines: 3, // Makes the field taller
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a description' : null,
+                ),
+                const SizedBox(height: 16),
+
+                // 7. The "Price" text field
+                TextFormField(
+                  controller: _priceController,
+                  decoration: const InputDecoration(labelText: 'Price'),
+                  keyboardType: TextInputType.number, // Shows number keyboard
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a price';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // 8. The "Upload" Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  // 9. If loading, disable the button
+                  onPressed: _isLoading ? null : _uploadProduct,
+                  // 10. If loading, show spinner, else show text
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text('Upload Product'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

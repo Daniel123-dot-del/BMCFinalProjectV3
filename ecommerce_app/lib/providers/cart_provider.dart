@@ -192,6 +192,7 @@ class CartProvider with ChangeNotifier {
     }
   }
 
+  // ✅ ADD THIS: Clears the cart after placing order
   Future<void> clearCart() async {
     _items = []; // Clear local list
     await _firestore.collection('userCarts').doc(_userId).set({
